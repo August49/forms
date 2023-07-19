@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import FormComponent from "./assets/components/formComponent";
+import Input from "./assets/components/form";
+
+const schema = yup.object({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character"
+    )
+    .required("Password is required"),
+});
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(schema) });
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <FormComponent onSubmit={handleSubmit(onSubmit)}>
+      <Input
+        placeholder="Email"
+        name="email"
+        label="Email Address"
+        type="email"
+        register={register}
+        errors={errors}
+        styles={"form-control"}
+      />
+      <Input
+        placeholder="Password"
+        name="password"
+        label="Password"
+        type="password"
+        register={register}
+        errors={errors}
+        styles={"form-control"}
+      />
+      <Input
+        name="submit"
+        type="submit"
+        errors={errors}
+        register={register}
+        styles={"btn btn-primary"}
+      />
+    </FormComponent>
+  );
 }
 
-export default App
+export default App;
