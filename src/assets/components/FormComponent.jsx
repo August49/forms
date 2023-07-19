@@ -2,7 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 function FormComponent({ onSubmit, children }) {
-  return <form onSubmit={onSubmit}>{children}</form>;
+  return (
+    <form className="m-4" onSubmit={onSubmit}>
+      {children}
+    </form>
+  );
 }
 
 FormComponent.propTypes = {
